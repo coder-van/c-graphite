@@ -1,0 +1,25 @@
+[Unit]
+Description=v-collect instance
+Documentation=http://github.com/coder-van/v-collect
+Wants=network-online.target
+After=network-online.target
+After=postgresql.service mariadb.service mysql.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/v-collect-server
+User=v
+Group=v
+Type=simple
+Restart=on-failure
+WorkingDirectory=/usr/share/v-collect
+ExecStart=/usr/sbin/v-collect-server                                \
+                            --config=${CONF_FILE}                 \
+                            --pidfile=${PID_FILE}                 \
+                            cfg:default.paths.logs=${LOG_DIR}     \
+                            cfg:default.paths.data=${DATA_DIR}    \
+                            cfg:default.paths.plugins=${PLUGINS_DIR}
+LimitNOFILE=10000
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+# default config for server
+
+V_USER=v
+V_GROUP=v
+NAME=v-carbon
+WORK_DIR=/usr/share/v-carbon/
+
+CONF_DIR=/etc/$NAME
+
+DATA_DIR=/var/lib/$NAME
+
+LOG_DIR=/var/log/$NAME
+
+MAX_OPEN_FILES=10000
+
+PID_FILE=/var/run/$NAME.pid
+
+PROG=/usr/sbin/$NAME

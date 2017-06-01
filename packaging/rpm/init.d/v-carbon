@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+#
+# chkconfig:   2345 85 15
+# description: Fast, self-healing, application container server
+# processname: v-collect
+# config:      /etc/v-collect/v-collect.ini
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+OWNER=coder-van
+NAME=v-collect
+DESC="v-collect server"
+
+PROG=/usr/sbin/v-collect
+PID_FILE="/var/run/v-collect.pid"
+
+# DAEMON_OPTS="--ini /etc/v-collect/v-collect.ini  --daemonize /var/log/v-collect.log"
+
+[ -f /etc/sysconfig/v-collect ] && . /etc/sysconfig/v-collect
+
+ # lockfile=/var/lock/v-collect.pid
+
+start () {
+  echo -n "Starting $NAME $DESC: "
+  # daemon $PROG --user v --force  --pid-file /var/run/v-collect.pid  --daemonize /var/log/v-collect.log
+  nohup $PROG &> /dev/null &
+  echo $! > "/var/run/v-collect.pid"
+  echo_success
+  retval=0
+  echo
+  return $retval
+}
+
+stop () {
+  echo -n "Stopping $NAME $DESC: "
+  # uWSGI docs say INT is a gentler way to stop
+  killproc $PROG -INT
+  retval=$?
+  echo
+  [ $retval -eq 0 ] && rm -f ${PID_FILE}
+  return $retval
+}
+
+reload () {
+  echo "Reloading $NAME"
+  killproc $PROG -HUP
+  RETVAL=$?
+  echo
+}
+
+restart () {
+    stop
+    start
+}
+
+rh_status () {
+  status $PROG
+}
+
+rh_status_q() {
+  rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+  start)
+    rh_status_q && exit 0
+    $1
+    ;;
+  stop)
+    rh_status_q || exit 0
+    $1
+    ;;
+  restart)
+    $1
+    ;;
+  reload)
+    rh_status_q || exit 7
+    $1
+    ;;
+  status)
+    rh_status
+    ;;
+  condrestart|try-restart)
+    rh_status_q || exit 0
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|condrestart|try-restart|reload|status}" >&2
+    exit 2
+    ;;
+esac
+exit 0

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+DAEMON=v-collect
+EXECUTABLE=/usr/local/bin/v-collect
+CONFIG=/usr/local/etc/v-collect/default.ini
+HOMEPATH=/usr/local/share/v-collect
+LOGPATH=/usr/local/var/log/v-collect
+DATAPATH=/usr/local/var/lib/v-collect
+PLUGINPATH=/usr/local/var/lib/v-collect/plugins
+
+case "$1" in
+start)
+  $EXECUTABLE --config=$CONFIG --homepath=$HOMEPATH cfg:default.paths.logs=$LOGPATH cfg:default.paths.data=$DATAPATH 2> /dev/null &
+  [ $? -eq 0 ] && echo "$DAEMON started"
+;;
+stop)
+  killall $DAEMON
+  [ $? -eq 0 ] && echo "$DAEMON stopped"
+;;
+restart)
+  $0 stop
+  $0 start
+;;
+*)
+  echo "Usage: $0 (start|stop|restart)"
+;;
+esac

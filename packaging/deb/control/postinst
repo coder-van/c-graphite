@@ -1,0 +1,65 @@
+#!/bin/sh
+
+set -e
+
+[ -f /etc/default/v-carbon ] && . /etc/default/v-carbon
+
+IS_UPGRADE=false
+
+case "$1" in
+	configure)
+        [ -z "$V_USER" ] && V_USER="v"
+        [ -z "$V_GROUP" ] && V_GROUP="v"
+        if ! getent group "$V_GROUP" > /dev/null 2>&1 ; then
+            addgroup --system "$V_GROUP" --quiet
+        fi
+        if ! id $V_USER > /dev/null 2>&1 ; then
+            adduser --system --home /usr/share/v-carbon --no-create-home \
+            --ingroup "$V_GROUP" --disabled-password --shell /bin/false "$V_USER"
+        fi
+
+        # Prepare dirs, log-dir, data-dir and pid-file
+        mkdir -p "$LOG_DIR" "$DATA_DIR" "$CONF_DIR"
+        chown "$V_USER":"$V_GROUP" "$LOG_DIR" "$DATA_DIR"
+        chmod 755 "$LOG_DIR" "$DATA_DIR" "$CONF_DIR"
+        touch "$PID_FILE"
+        chown "$V_USER":"$V_GROUP" "$PID_FILE"
+
+        # If $1=configure and $2 is set, this is an upgrade
+        if [ "$2" != "" ]; then
+            IS_UPGRADE=true
+        fi
+
+        if [ "x$IS_UPGRADE" != "xtrue" ]; then
+            if command -v systemctl >/dev/null; then
+                echo "### NOT starting on installation, please execute the following statements to configure v-collect to start automatically using systemd"
+                echo " sudo /bin/systemctl daemon-reload"
+                echo " sudo /bin/systemctl enable v-carbon"
+                echo "### You can start {$NAME} by executing"
+                echo " sudo /bin/systemctl start v-carbon"
+            elif command -v update-rc.d >/dev/null; then
+                echo "### NOT starting v-carbon by default on boot up, please execute"
+                echo " sudo update-rc.d v-carbon defaults 95 10"
+                echo "### In order to start v-carbon, execute"
+                echo " sudo service v-carbon start"
+            fi
+        elif [ "$RESTART_ON_UPGRADE" = "true" ]; then
+
+            echo -n "Restarting v-carbon-server service..."
+
+            if command -v systemctl >/dev/null; then
+                systemctl daemon-reload
+                systemctl restart v-carbon-server || true
+
+            elif [ -x /etc/init.d/v-carbon-server ]; then
+                if command -v invoke-rc.d >/dev/null; then
+                    invoke-rc.d v-carbon-server restart || true
+                else
+                    /etc/init.d/v-carbon-server restart || true
+                fi
+            fi
+            echo " OK"
+
+	    fi
+	;;
+esac

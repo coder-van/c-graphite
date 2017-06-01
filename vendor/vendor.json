@@ -1,0 +1,163 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "pPH/BoINXxzYDObljpsGZbysMrw=",
+			"path": "github.com/BurntSushi/toml",
+			"revision": "b26d9c308763d68093482582cea63d69be07a0f0",
+			"revisionTime": "2017-03-28T06:15:53Z"
+		},
+		{
+			"checksumSHA1": "acGG5NV9NBtjspVlWZ86Zzg8pW8=",
+			"path": "github.com/alyu/configparser",
+			"revision": "26b2fe18bee125de2a3090d6fadb7e280e63eba6",
+			"revisionTime": "2015-11-25T02:12:32Z"
+		},
+		{
+			"checksumSHA1": "BVPKwPIsNL4mL0K+zDJZplTr3Hs=",
+			"path": "github.com/coder-van/v-stats",
+			"revision": "ed72b282e7d1603252aafe3d98de9d6f8c53adaa",
+			"revisionTime": "2017-05-11T04:04:43Z"
+		},
+		{
+			"checksumSHA1": "feGb3UBP+zbyChvvL2Pg6S8PymY=",
+			"path": "github.com/coder-van/v-stats/backends",
+			"revision": "ed72b282e7d1603252aafe3d98de9d6f8c53adaa",
+			"revisionTime": "2017-05-11T04:04:43Z"
+		},
+		{
+			"checksumSHA1": "jmWTRKhjjdy+3Ubkp3dkUr163uE=",
+			"path": "github.com/coder-van/v-stats/backends/graghite",
+			"revision": "ed72b282e7d1603252aafe3d98de9d6f8c53adaa",
+			"revisionTime": "2017-05-11T04:04:43Z"
+		},
+		{
+			"checksumSHA1": "rU9xquMiUD9IIK6ISmjHsW3HMNI=",
+			"path": "github.com/coder-van/v-stats/metrics",
+			"revision": "1f30fe9094a513ce4c700b9a54458bbb0c96996c",
+			"revisionTime": "2016-11-28T21:05:44Z"
+		},
+		{
+			"checksumSHA1": "3MWZ2PGRhGUzMUAbupgqw3lSO1Y=",
+			"path": "github.com/coder-van/v-stats/receivers",
+			"revision": "ed72b282e7d1603252aafe3d98de9d6f8c53adaa",
+			"revisionTime": "2017-05-11T04:04:43Z"
+		},
+		{
+			"checksumSHA1": "P69Z9VeucxKUAl2xj6H5aKkIJN0=",
+			"path": "github.com/coder-van/v-util/log",
+			"revision": "6663f8d39162685b7f6ce0811596b454202dfaed",
+			"revisionTime": "2017-05-11T03:57:32Z"
+		},
+		{
+			"checksumSHA1": "UsILDoIB2S7ra+w2fMdb85mX3HM=",
+			"path": "github.com/gin-gonic/gin/binding",
+			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
+			"revisionTime": "2016-12-04T22:13:08Z"
+		},
+		{
+			"checksumSHA1": "PHv9FNb7YavJWtAHcY6ZgXmkmHs=",
+			"path": "github.com/gin-gonic/gin/render",
+			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
+			"revisionTime": "2016-12-04T22:13:08Z"
+		},
+		{
+			"checksumSHA1": "xSWx2S0xGW9wtMFNGShvzyvVsTk=",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": "2bba0603135d7d7f5cb73b2125beeda19c09f4ef",
+			"revisionTime": "2017-03-31T03:19:02Z"
+		},
+		{
+			"checksumSHA1": "b0T0Hzd+zYk+OCDTFMps+jwa/nY=",
+			"path": "github.com/manucorporat/sse",
+			"revision": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d",
+			"revisionTime": "2016-01-26T18:01:36Z"
+		},
+		{
+			"checksumSHA1": "U6lX43KDDlNOn+Z0Yyww+ZzHfFo=",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "fc9e8d8ef48496124e79ae0df75490096eccf6fe",
+			"revisionTime": "2017-03-22T23:44:13Z"
+		},
+		{
+			"checksumSHA1": "P4e4ILJPNiu2e9rW5pNGHPthufQ=",
+			"path": "go.uber.org/atomic",
+			"revision": "4e336646b2ef9fc6e47be8e21594178f98e5ebcf",
+			"revisionTime": "2017-04-11T02:30:53Z"
+		},
+		{
+			"checksumSHA1": "gsVjLZUt5vDhmyNW2KRHUGmJ18k=",
+			"path": "go.uber.org/zap",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "HYo/9nwrY08NQA+2ItPOAH8IFW8=",
+			"path": "go.uber.org/zap/buffer",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "MuxOAtZEsJitlWBzhmpm2vGiHok=",
+			"path": "go.uber.org/zap/internal/bufferpool",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "uC0L9eCSAYcCWNC8udJk/t1vvIU=",
+			"path": "go.uber.org/zap/internal/color",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "b80CJExrVpXu3SA1iCQ6uLqTn2c=",
+			"path": "go.uber.org/zap/internal/exit",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "mpgG6h5iItTyTOjG1CsPGYb65bM=",
+			"path": "go.uber.org/zap/internal/multierror",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "TQZM/V+kitAv+wPtnnS/a0YOoDs=",
+			"path": "go.uber.org/zap/zapcore",
+			"revision": "1550bc05539134bbf8612a35f34a79ab8bf34ee3",
+			"revisionTime": "2017-04-14T05:12:42Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "da118f7b8e5954f39d0d2130ab35d4bf0e3cb344",
+			"revisionTime": "2017-04-23T14:02:46Z"
+		},
+		{
+			"checksumSHA1": "xFuVkHZE05Tul9eIkwuMDaCZudY=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "9ccfe848b9db8435a24c424abbc07a921adf1df5",
+			"revisionTime": "2017-04-27T03:54:25Z"
+		},
+		{
+			"checksumSHA1": "54wjxDaqV8e8NvAyEH6fRDX88gU=",
+			"path": "gopkg.in/gin-gonic/gin.v1",
+			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
+			"revisionTime": "2016-12-04T22:13:08Z"
+		},
+		{
+			"checksumSHA1": "lIYiNu8dcGmOc7xKqpA2DLdE3Z0=",
+			"path": "gopkg.in/go-playground/validator.v8",
+			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
+			"revisionTime": "2016-07-18T13:41:25Z"
+		},
+		{
+			"checksumSHA1": "fALlQNY1fM99NesfLJ50KguWsio=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
+			"revisionTime": "2017-04-07T17:21:22Z"
+		}
+	],
+	"rootPath": "github.com/coder-van/v-carbon"
+}
