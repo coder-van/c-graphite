@@ -6,14 +6,14 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Start v-carbon at boot time
+# Short-Description: Start v-graphite at boot time
 ### END INIT INFO
 
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-NAME=v-carbon
-DESC="carbon server"
-DEFAULT=/etc/default/v-carbon
+NAME=v-graphite
+DESC="graphite server"
+DEFAULT=/etc/default/v-graphite
 
 PID_FILE=/var/run/$NAME.pid
 PROG=/usr/sbin/$NAME
@@ -54,13 +54,12 @@ case "$1" in
         checkUser
 	    log_daemon_msg "Starting $DESC $NAME"
 
-	    pid=`pidofproc -p $PID_FILE v-carbon`
+	    pid=`pidofproc -p $PID_FILE v-graphite`
 	    if [ -n "$pid" ] ; then
 		    log_begin_msg "Already running."
 		    log_end_msg 0
 		    exit 0
 	    fi
-        dirsNeed
 
 	    # Start Daemon
 	    start-stop-daemon --start -b -m  --pidfile "$PID_FILE" --exec $PROG
@@ -98,7 +97,7 @@ case "$1" in
 	    log_end_msg 0
 	;;
     status)
-	    status_of_proc -p $PID_FILE v-carbon v-carbon && exit 0 || exit $?
+	    status_of_proc -p $PID_FILE v-graphite v-graphite && exit 0 || exit $?
     ;;
     restart|force-reload)
 	    if [ -f "$PID_FILE" ]; then

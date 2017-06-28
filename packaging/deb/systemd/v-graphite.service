@@ -1,0 +1,21 @@
+[Unit]
+Description=v-graphite instance
+Documentation=http://github.com/coder-van/v-graphite
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/default/v-graphite
+User=v-graphite
+Group=v-graphite
+Type=simple
+Restart=on-failure
+WorkingDirectory=/usr/share/v-graphite
+ExecStart=/usr/sbin/v-graphite
+
+LimitNOFILE=10000
+TimeoutStopSec=20
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

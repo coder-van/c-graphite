@@ -8,11 +8,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 	statsd "github.com/coder-van/v-stats"
 	"time"
 	"github.com/coder-van/v-util/log"
 	"strings"
+	"fmt"
 )
 
 type WriteStrategy int
@@ -89,7 +90,7 @@ func (cpb *CachePointBag) GetPointBagForDb() *common.PointBag{
 // A "thread" safe map of type string:Anything.
 // To avoid lock bottlenecks this map is dived to several (shardCount) map shards.
 type Cache struct {
-	SizeLimit  int64  // limit when add pointBag ,if the pointBag data size over this limit, drop it
+	SizeLimit     int64  // limit when add pointBag ,if the pointBag data size over this limit, drop it
 	writeStrategy WriteStrategy
 	data          []*Shard
 	ChanForDB     chan *common.PointBag
@@ -144,18 +145,21 @@ func (c *Cache) Get(key string, from, util int64) (bool, []common.Point) {
 	shard.Lock()
 	defer shard.Unlock()
 	if p, exists := shard.items[key]; exists {
+		fmt.Println(time.Now().Unix() - p.duration)
 		if from >= time.Now().Unix() - p.duration {
 			for _, dp := range p.Data {
 				if dp.Timestamp >= from && dp.Timestamp <= util{
 					data = append(data, dp)
 				}
 			}
+			return true, data
+			
 		}else{
 			return false, nil
 		}
 		
 	}
-	return true, data
+	return false, nil
 }
 func (c *Cache) GetMetricInfo(key string) (bool, int64, int) {
 	c.stat.CounterInc("query-times", 1)

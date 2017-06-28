@@ -3,16 +3,16 @@ package app
 import (
 	"runtime"
 
-	"github.com/coder-van/v-carbon/src/cache"
-	"github.com/coder-van/v-carbon/src/persists"
-	"github.com/coder-van/v-carbon/src/receivers"
+	"github.com/coder-van/v-graphite/src/cache"
+	"github.com/coder-van/v-graphite/src/persists"
+	"github.com/coder-van/v-graphite/src/receivers"
 	"github.com/coder-van/v-util/log"
 
 	"fmt"
 	"os"
 	"strings"
 	"time"
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 )
 
 type App struct {
@@ -91,7 +91,7 @@ func (app *App) Start() (err error) {
 	app.PersistManager.Start()
 	app.ReceiverManager.Start()
 
-	app.apiServer = NewApiServer(app.PersistManager, app.Cache)
+	app.apiServer = NewApiServer(conf.Api.Port, conf.Api.CacheEnable, app.PersistManager, app.Cache)
 	app.apiServer.Start()
 	
 	stat := NewStat(app.Cache, 5)

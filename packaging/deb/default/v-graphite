@@ -1,9 +1,10 @@
 # default config for server
 
-V_USER=v
-V_GROUP=v
-NAME=v-carbon
-WORK_DIR=/usr/share/v-carbon/
+V_USER=v-graphite
+V_GROUP=v-graphite
+NAME=v-graphite
+
+HOME_DIR=/user/share/$NAME
 
 CONF_DIR=/etc/$NAME
 

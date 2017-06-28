@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 	
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 )
 
 const MB = 1048576

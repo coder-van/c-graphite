@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 	"github.com/coder-van/v-util/log"
 	"fmt"
 )

@@ -16,7 +16,7 @@ import (
 	// "github.com/coder-van/v-carbon/src/common"
 	"github.com/coder-van/v-util/log"
 	"io"
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 )
 
 const (

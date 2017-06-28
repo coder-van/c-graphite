@@ -20,8 +20,9 @@ func (c *commConfig) String() string {
 }
 
 type loggingConfig struct {
-	LogRoot  string
-	LogLevel string `toml:"log-level"`
+	LogRoot     string `toml:"log-dir"`
+	LogLevel    string `toml:"log-level"`
+	ErrorEnable string `toml:"error-stat-enable"`
 }
 
 type whisperConfig struct {
@@ -50,6 +51,11 @@ type receiverConfig struct {
 	IsPickle bool   `toml:"is-pickle"`
 }
 
+type apiConfig struct {
+	Port        int `toml:"port"`
+	CacheEnable bool   `toml:"cache-enable"`
+}
+
 func (c *receiverConfig) String() string {
 	str := "Listen string =" + string(c.Listen)
 	str += "IsPickle  bool=" + strconv.FormatBool(c.IsPickle)
@@ -65,7 +71,7 @@ type Config struct {
 	Persist    whisperConfig             `toml:"whisper"`
 	Logging    loggingConfig             `toml:"logging"`
 	Receivers  map[string]receiverConfig `toml:"receivers"`
-	CacheQuery cacheQueryConfig          `toml:"cache-query"`
+	Api        apiConfig                 `toml:"api"`
 }
 
 func NewConfig() *Config {
@@ -117,23 +123,29 @@ func (c *Config) String() (str string) {
 }
 
 func (c *Config) Check() {
-	lp, err := getPath("/var/log/v-carbon", "./log")
+	lp, err := getPath(c.Logging.LogRoot, "./log")
 	if err != nil {
 		panic("Log dir set fail")
 		return
 	}
+	c.Logging.LogRoot = lp
+	
 	if c.Cache.MaxSize < 1024 * 1024 {
 		fmt.Println("warn caache max_size can't smaller than 1024*1024, set to 1M")
 		c.Cache.MaxSize = 1024*1024
 	}
-	c.Logging.LogRoot = lp
+	
+	if c.Api.Port <= 0 {
+		c.Api.Port = 8080
+	}
+	
 }
 
 func getDefaultConfigPath() (string, error) {
 	/*
 	 Try to find a default config file at current or /etc dir
 	*/
-	etcConfPath := "/etc/v-carbon/carbon.conf"
+	etcConfPath := "/etc/v-graphite/carbon.conf"
 	return getPath(etcConfPath, "./conf/carbon.conf")
 }
 

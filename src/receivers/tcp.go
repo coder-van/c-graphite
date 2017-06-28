@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 	"strings"
 	statsd "github.com/coder-van/v-stats"
 	"github.com/coder-van/v-util/log"

@@ -2,9 +2,8 @@ package receivers
 
 import "fmt"
 import (
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 	"net"
-	"strings"
 )
 
 type InterfaceReceiver interface {
@@ -47,9 +46,6 @@ func (rm *ReceiverManager) Run() {
 			return
 
 		case pb = <-rm.ChanPointBagsReceived:
-			if strings.Index(pb.Key, "cpu.cpu-total.idle") >= 0 {
-				fmt.Println(pb.Key, pb.Value, pb.Timestamp)
-			}
 			rm.CachePB(pb)
 		}
 	}

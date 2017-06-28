@@ -2,15 +2,15 @@ package app
 
 import (
 	"fmt"
-	"github.com/coder-van/v-carbon/src/persists"
+	"github.com/coder-van/v-graphite/src/persists"
 	"github.com/coder-van/v-util/log"
 	"gopkg.in/gin-gonic/gin.v1"
 	"math"
 	"regexp"
 	"strconv"
 	"time"
-	"github.com/coder-van/v-carbon/src/cache"
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/cache"
+	"github.com/coder-van/v-graphite/src/common"
 	"github.com/coder-van/v-stats"
 	"path"
 	"github.com/coder-van/v-stats/metrics"
@@ -26,14 +26,20 @@ type fetchResponse struct {
 }
 
 type ApiServer struct {
+	Port   int
+	CacheEnable bool
 	cache  *cache.Cache
 	pm     *persists.PersistManager
 	logger *log.Vlogger
 	stat          *statsd.BaseStat
 }
 
-func NewApiServer(pm *persists.PersistManager, c *cache.Cache) *ApiServer {
+func NewApiServer(port int, enable bool,
+	pm *persists.PersistManager, c *cache.Cache) *ApiServer {
+	
 	return &ApiServer{
+		Port:   port,
+		CacheEnable: enable,
 		cache:  c,
 		pm:     pm,
 		logger: log.GetLogger("api", log.RotateModeMonth),
@@ -44,9 +50,9 @@ func NewApiServer(pm *persists.PersistManager, c *cache.Cache) *ApiServer {
 func (api *ApiServer) listHandler(c *gin.Context) {
 	// URL: /metrics/list/?format=json
 	api.stat.GaugeInc("list-requests", 1)
-	metrics := api.pm.FindMetricList()
+	metricList := api.pm.FindMetricList()
 
-	c.JSON(200, metrics)
+	c.JSON(200, metricList)
 	return
 
 }
@@ -54,7 +60,7 @@ func (api *ApiServer) listHandler(c *gin.Context) {
 func (api *ApiServer) findHandler(c *gin.Context) {
 	// URL: /metrics/find/?local=1&format=pickle&query=the.metric.path.with.glob
 	
-	api.stat.GaugeInc("find-requests", 1)
+	api.stat.CounterInc("find-requests", 1)
 	query := c.DefaultQuery("query", "")
 
 	if query == "" {
@@ -67,7 +73,7 @@ func (api *ApiServer) findHandler(c *gin.Context) {
 
 	nodes, err := api.pm.FindNodes(query)
 	if err != nil {
-		api.stat.OnErr("error-find-request--find-node-fail",
+		api.stat.OnErr("error-find-request-find-node-fail",
 			fmt.Errorf("can't find nodes about %s", query))
 		c.JSON(400, gin.H{
 			"error": "can't find nodes " + query,
@@ -145,15 +151,16 @@ func convertTime(t string) (int64, error) {
 type RenderResponse []*RenderTarget
 
 func (api *ApiServer) renderHandler(c *gin.Context) {
-	api.stat.GaugeInc("render-requests", 1)
+	api.stat.CounterInc("render-requests", 1)
+	
 	targets := c.PostFormArray("target")
-	from := c.DefaultPostForm("from", "-3h")
-	until := c.DefaultPostForm("until", "now")
-
+	from    := c.DefaultPostForm("from", "-3h")
+	until   := c.DefaultPostForm("until", "now")
 	from_timestamp, err := convertTime(from)
 	until_timestamp, err := convertTime(until)
 	
 	if err != nil {
+		api.stat.OnErr("error-render-request-time-convert", err)
 		c.JSON(400, gin.H{
 			"error": err,
 		})
@@ -161,7 +168,7 @@ func (api *ApiServer) renderHandler(c *gin.Context) {
 	
 	renderResponse := make([]*RenderTarget, 0)
 	for _, target := range targets {
-		api.stat.GaugeInc("render-requests", 1)
+		fmt.Println(target)
 		wfs, err := api.pm.DbInstance.Match(target)
 		if err != nil {
 			api.stat.OnErr("error-render-request-target-match", err)
@@ -171,14 +178,15 @@ func (api *ApiServer) renderHandler(c *gin.Context) {
 		}
 		
 		for _, k := range wfs {
-			api.stat.GaugeInc("render-requests-target", 1)
+			api.stat.CounterInc("render-requests-target", 1)
 			// 先查看缓存
-			isOk, points := api.cache.Get(k, from_timestamp, until_timestamp)
 			rt := NewRenderTarget(k)
 			
-			if isOk {
+			isOk, points := api.cache.Get(k, from_timestamp, until_timestamp)
+			
+			if api.CacheEnable && isOk {
 				// 缓存命中
-				api.stat.GaugeInc("render-requests-from-cache", 1)
+				api.stat.CounterInc("render-requests-from-cache", 1)
 				for _, p := range points {
 					dp := make([]interface{}, 2)
 					if math.IsNaN(p.Value) {
@@ -191,14 +199,15 @@ func (api *ApiServer) renderHandler(c *gin.Context) {
 					rt.Datapoints = append(rt.Datapoints, dp)
 				}
 				
-			}else{
-				api.stat.GaugeInc("render-requests-from-db", 1)
+			} else {
+				api.stat.CounterInc("render-requests-from-db", 1)
 				wf, err := api.pm.DbInstance.Open(k)
 				if err != nil {
 					api.stat.OnErr("error-render-request-wf-open", err)
 					continue
 				}
 				timeSeries, err := wf.Fetch(int(from_timestamp), int(until_timestamp))
+				
 				if err != nil {
 					api.stat.OnErr("error-render-request-wf-fetch", err)
 					wf.Close()
@@ -292,7 +301,7 @@ func (api *ApiServer) Stop() {
 }
 
 func (api *ApiServer) Start() {
-	go api.RegisterRouter(":8080")
+	go api.RegisterRouter(fmt.Sprintf(":%d", api.Port))
 }
 
 func (api *ApiServer) RegisterRouter(addr string) {

@@ -5,7 +5,7 @@ import (
 	"syscall"
 
 	// daemon "github.com/sevlyar/go-daemon"
-	"github.com/coder-van/v-carbon/src/app"
+	"github.com/coder-van/v-graphite/src/app"
 	"log"
 	"os"
 	"os/signal"

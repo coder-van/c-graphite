@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 	
-	"github.com/coder-van/v-carbon/src/common"
+	"github.com/coder-van/v-graphite/src/common"
 	"github.com/coder-van/v-util/log"
 	statsd "github.com/coder-van/v-stats"
 	"runtime"
@@ -204,6 +204,7 @@ func (w *Whisper) loadConfig() {
 		w.logger.Fatalln("Error on ReadSchemasConfig:", err)
 	}
 	w.schemas = schemas
+	
 }
 
 func (w *Whisper)  Init()  {
@@ -245,6 +246,10 @@ func (w *Whisper) Run(i int)  {
 	for {
 		select {
 		case pb = <- w.ChanForDB:
+			//if strings.Index(pb.Metric, "cpu.cpu-total.idle") > 0 {
+			//	fmt.Println(":::", pb)
+			//	w.logger.Printf("write pb to db %s \n", pb)
+			//}
 			swf := w.getSWF(pb.Metric)
 			swf.Store(w.RootPath, *pb)
 		case <- w.exit:
@@ -255,6 +260,7 @@ func (w *Whisper) Run(i int)  {
 }
 
 func (w *Whisper) Start() {
+	
 	w.loadConfig()
 	w.loadMetricList()
 	count := runtime.NumCPU()
@@ -341,10 +347,11 @@ func (w *Whisper) loadMetricList() {
 	dumpPath := path.Join(w.RootPath, "metirc-directory")
 	file, err := os.OpenFile(dumpPath, os.O_RDWR, 0666)
 	logger := log.GetLogger("whisper-manager", log.RotateModeMonth)
+	
 	if err != nil {
 		logger.Error("Whiper loadDirectory failed to open file, ", err)
 	}
-	
+	fmt.Printf("loadDirectory from %s \n", dumpPath)
 	defer file.Close()
 
 	timeStart := time.Now()

@@ -2,9 +2,9 @@ package persists
 
 import (
 	"fmt"
-	"github.com/coder-van/v-carbon/src/cache"
-	"github.com/coder-van/v-carbon/src/common"
-	whisper "github.com/coder-van/v-carbon/src/persists/whisper"
+	"github.com/coder-van/v-graphite/src/cache"
+	"github.com/coder-van/v-graphite/src/common"
+	whisper "github.com/coder-van/v-graphite/src/persists/whisper"
 	"time"
 )
 

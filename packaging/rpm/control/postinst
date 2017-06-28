@@ -2,26 +2,26 @@
 
 set -e
 
-[ -f /etc/sysconfig/v-collect-server ] && . /etc/sysconfig/v-collect-server
+[ -f /etc/sysconfig/v-graphite ] && . /etc/sysconfig/v-graphite
 
 startServer() {
   if [ -x /bin/systemctl ] ; then
     /bin/systemctl daemon-reload
-		/bin/systemctl start v-collect-server.service
-	elif [ -x /etc/init.d/v-collect-server ] ; then
-		/etc/init.d/v-collect-server start
-	elif [ -x /etc/rc.d/init.d/v-collect-server ] ; then
-		/etc/rc.d/init.d/v-collect-server start
+		/bin/systemctl start v-graphite.service
+	elif [ -x /etc/init.d/v-graphite ] ; then
+		/etc/init.d/v-graphite start
+	elif [ -x /etc/rc.d/init.d/v-graphite ] ; then
+		/etc/rc.d/init.d/v-graphite start
 	fi
 }
 
 stopServer() {
 	if [ -x /bin/systemctl ] ; then
-		/bin/systemctl stop v-collect-server.service > /dev/null 2>&1 || :
-	elif [ -x /etc/init.d/v-collect-service ] ; then
-		/etc/init.d/v-collect-service stop
-	elif [ -x /etc/rc.d/init.d/v-collect-service ] ; then
-		/etc/rc.d/init.d/v-collect-service stop
+		/bin/systemctl stop v-graphite.service > /dev/null 2>&1 || :
+	elif [ -x /etc/init.d/v-graphite ] ; then
+		/etc/init.d/v-graphite stop
+	elif [ -x /etc/rc.d/init.d/v-graphite ] ; then
+		/etc/rc.d/init.d/v-graphite stop
 	fi
 }
 
@@ -38,36 +38,31 @@ if [ $1 -eq 1 ] ; then
 
 	if ! getent passwd "$V_USER" > /dev/null 2>&1 ;
 	then
-         useradd -r -g v -d /usr/share/v-collect -s /sbin/nologin -c "v user for v-collect and v-carbon" "$V_USER"
+         useradd -r -g v -d /usr/share/v-graphite -s /sbin/nologin -c "v user for v-graphite and v-graphite" "$V_USER"
 	fi
 
-  # copy config files
-  if [ ! -f $CONF_FILE ]; then
-    cp /usr/share/v-collect/conf/default.ini /etc/v-collect/default.ini
-  fi
+ 	# Set user permissions
+	mkdir -p /var/log/v-graphite /var/lib/v-graphite
+	chown -R $V_USER:$V_GROUP /var/log/v-graphite /var/lib/v-graphite
+	chmod 755 /var/log/v-graphite /var/lib/v-graphite
 
- 	# Set user permissions on /var/log/v-collect, /var/lib/v-collect
-	mkdir -p /var/log/v-collect /var/lib/v-collect
-	chown -R $V_USER:$V_GROUP /var/log/v-collect /var/lib/v-collect
-	chmod 755 /var/log/v-collect /var/lib/v-collect
-
-	# configuration files should not be modifiable by v-collect user, as this can be a security issue
-	chown -Rh root:$V_GROUP /etc/v-collect/*
-	chmod 755 /etc/v-collect
-	find /etc/v-collect -type f -exec chmod 640 {} ';'
-	find /etc/v-collect -type d -exec chmod 755 {} ';'
+	# configuration files should not be modifiable by v-graphite user, as this can be a security issue
+	chown -Rh root:$V_GROUP /etc/v-graphite/*
+	chmod 755 /etc/v-graphite
+	find /etc/v-graphite -type f -exec chmod 640 {} ';'
+	find /etc/v-graphite -type d -exec chmod 755 {} ';'
 
   if [ -x /bin/systemctl ] ; then
-    echo "### NOT starting on installation, please execute the following statements to configure v-collect to start automatically using systemd"
+    echo "### NOT starting on installation, please execute the following statements to configure v-graphite to start automatically using systemd"
     echo " sudo /bin/systemctl daemon-reload"
-    echo " sudo /bin/systemctl enable v-collect-server.service"
-    echo "### You can start v-collect-server by executing"
-    echo " sudo /bin/systemctl start v-collect-server.service"
+    echo " sudo /bin/systemctl enable v-graphite.service"
+    echo "### You can start v-graphite by executing"
+    echo " sudo /bin/systemctl start v-graphite.service"
   elif [ -x /sbin/chkconfig ] ; then
-    echo "### NOT starting v-collect-server by default on bootup, please execute"
-    echo " sudo /sbin/chkconfig --add v-collect-server"
-    echo "### In order to start v-collect-server, execute"
-    echo " sudo service v-collect-server start"
+    echo "### NOT starting v-graphite by default on bootup, please execute"
+    echo " sudo /sbin/chkconfig --add v-graphite"
+    echo "### In order to start v-graphite, execute"
+    echo " sudo service v-graphite start"
   fi
 elif [ $1 -ge 2 ] ; then
   if [ "$RESTART_ON_UPGRADE" == "true" ]; then

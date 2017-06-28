@@ -37,9 +37,9 @@ var (
 	workingDir         string
 	includeBuildNumber bool   = true
 	buildNumber        int    = 0
-	binaryName         string = "v-carbon"
+	binaryName         string = "v-graphite"
 	binarySrc          string = "./src"
-	packPrefix         string = "v-carbon-linux-pack"
+	packPrefix         string = "v-graphite-linux-pack"
 	packageRoot, _            = ioutil.TempDir("", packPrefix)
 )
 
@@ -202,14 +202,10 @@ func replaceBinaryName(str string) string {
 }
 
 func createPackage(options linuxPackageOptions) {
-	// mkdir tmp and copy bin conf to tmp
-	mkdirs( "dist", "tmp")
-	cpr(filepath.Join(workingDir, "bin"), filepath.Join(workingDir, "tmp"))
-	cpr(filepath.Join(workingDir, "conf"), filepath.Join(workingDir, "tmp"))
 
 	dirs := []string{
+		"dist",
 		join(options.homeDir),
-		// join(options.configDir),
 		join("/etc/init.d"),
 		join(options.etcDefaultPath),
 		join("/usr/lib/systemd/system"),
@@ -218,7 +214,7 @@ func createPackage(options linuxPackageOptions) {
 	mkdirs(dirs...)
 
 	// copy binary
-	cp(filepath.Join(workingDir, "tmp/bin/"+binaryName), join("/usr/sbin/"+binaryName))
+	cp(filepath.Join(workingDir, "bin/"+binaryName), join("/usr/sbin/"+binaryName))
 	// copy init.d script
 	cp(options.initdScriptSrc, join(options.initdScriptFilePath))
 	// copy environment var file
@@ -226,25 +222,21 @@ func createPackage(options linuxPackageOptions) {
 	// copy systemd file
 	cp(options.systemdFileSrc, join(options.systemdServiceFilePath))
 	// copy release files
-	//cpr(filepath.Join(workingDir, "tmp/bin"), join(options.homeDir))
-	//cpr(filepath.Join(workingDir, "tmp/conf"), join(options.homeDir))
-	cpr(filepath.Join(workingDir, "tmp/conf"), join(options.configDir))
-	// remove bin path
-	//rm(filepath.Join(packageRoot, options.homeDir, "bin"))
+	cpr(filepath.Join(workingDir, "conf"), join(options.configDir))
 
 	args := []string{
 		"-s", "dir",
-		"--description", "v-carbon",
+		"--description", binaryName,
 		"-C", packageRoot,
-		"--vendor", "v-carbon",
-		"--url", "https://github.com/coder-van/v-carbon",
+		"--vendor", binaryName,
+		"--url", "https://github.com/coder-van/v-graphite",
 		"--license", "\"Apache 2.0\"",
 		"--maintainer", "github.com/coder-van",
 		"--config-files", options.initdScriptFilePath,
 		"--config-files", options.etcDefaultFilePath,
 		"--config-files", options.systemdServiceFilePath,
 		"--after-install", options.postinstSrc,
-		"--name", "v-carbon",
+		"--name", binaryName,
 		"--version", linuxPackageVersion,
 		"-p", "./dist/",
 	}

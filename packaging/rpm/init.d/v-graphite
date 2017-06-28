@@ -3,31 +3,27 @@
 #
 # chkconfig:   2345 85 15
 # description: Fast, self-healing, application container server
-# processname: v-collect
-# config:      /etc/v-collect/v-collect.ini
+# processname: v-graphite
+# config:      /etc/v-graphite/
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 OWNER=coder-van
-NAME=v-collect
-DESC="v-collect server"
+NAME=v-graphite
+DESC="v-graphite server"
 
-PROG=/usr/sbin/v-collect
-PID_FILE="/var/run/v-collect.pid"
+PROG=/usr/sbin/v-graphite
+PID_FILE="/var/run/v-graphite.pid"
 
-# DAEMON_OPTS="--ini /etc/v-collect/v-collect.ini  --daemonize /var/log/v-collect.log"
-
-[ -f /etc/sysconfig/v-collect ] && . /etc/sysconfig/v-collect
-
- # lockfile=/var/lock/v-collect.pid
+[ -f /etc/sysconfig/v-graphite ] && . /etc/sysconfig/v-graphite
 
 start () {
   echo -n "Starting $NAME $DESC: "
-  # daemon $PROG --user v --force  --pid-file /var/run/v-collect.pid  --daemonize /var/log/v-collect.log
+  # daemon $PROG --user v --force  --pid-file /var/run/v-graphite.pid  --daemonize /var/log/v-graphite.log
   nohup $PROG &> /dev/null &
-  echo $! > "/var/run/v-collect.pid"
+  echo $! > "/var/run/v-graphite.pid"
   echo_success
   retval=0
   echo

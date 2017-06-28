@@ -4,23 +4,5 @@ set -e
 
 echo "POSTTRANS: Running script"
 
-[ -f /etc/sysconfig/v-collect-server ] && . /etc/sysconfig/v-collect-server
-
-# copy config files if missing
-if [ ! -f /etc/v-collect/default.conf ]; then
-  echo "POSTTRANS: Config file not found"
-
-  if [ -f /etc/v-collect/default.conf.rpmsave ]; then
-    echo "POSTTRANS: /etc/v-collect/default.conf.rpmsave config file found."
-    mv /etc/grafana/default.conf.rpmsave /etc/v-collect/default.conf
-    echo "POSTTRANS: /etc/v-collect/default.conf restored"
-
-    echo "POSTTRANS: Restoring config file permissions"
-    chown -Rh root:v /etc/v-collect/*
-    chmod 755 /etc/v-collect
-    find /etc/v-collect -type f -exec chmod 640 {} ';'
-    find /etc/v-collect -type d -exec chmod 755 {} ';'
-  fi
-fi
 
 
